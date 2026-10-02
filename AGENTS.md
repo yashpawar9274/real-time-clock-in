@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep authenticated workforce features under the managed `_authenticated` route; this centralizes access control.
+- Use browser Supabase calls under RLS for attendance and payroll data; this preserves live updates and user-scoped access.
