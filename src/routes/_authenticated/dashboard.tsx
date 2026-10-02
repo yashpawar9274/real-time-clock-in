@@ -64,7 +64,7 @@ function Dashboard() {
     if (admin) {
       const [ps, at, payroll] = await Promise.all([
         supabase.from("profiles").select("*").order("full_name"),
-        supabase.from("attendance").select("*").order("work_date", { ascending: false }).limit(500),
+        supabase.from("attendance").select("*").order("check_in", { ascending: false }).limit(500),
         supabase.from("salary_records").select("*").order("salary_month", { ascending: false }).limit(500),
       ]);
       setProfiles(ps.data || []);
