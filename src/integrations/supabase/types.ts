@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           id: string
           note: string | null
+          photo_path: string | null
           updated_at: string
           user_id: string
           work_date: string
@@ -31,6 +32,7 @@ export type Database = {
           created_at?: string
           id?: string
           note?: string | null
+          photo_path?: string | null
           updated_at?: string
           user_id: string
           work_date?: string
@@ -41,6 +43,7 @@ export type Database = {
           created_at?: string
           id?: string
           note?: string | null
+          photo_path?: string | null
           updated_at?: string
           user_id?: string
           work_date?: string
@@ -170,25 +173,47 @@ export type Database = {
         Args: { _salary_month?: string }
         Returns: number
       }
-      punch_in: {
-        Args: never
-        Returns: {
-          check_in: string
-          check_out: string | null
-          created_at: string
-          id: string
-          note: string | null
-          updated_at: string
-          user_id: string
-          work_date: string
-        }
-        SetofOptions: {
-          from: "*"
-          to: "attendance"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
+      punch_in:
+        | {
+            Args: never
+            Returns: {
+              check_in: string
+              check_out: string | null
+              created_at: string
+              id: string
+              note: string | null
+              photo_path: string | null
+              updated_at: string
+              user_id: string
+              work_date: string
+            }
+            SetofOptions: {
+              from: "*"
+              to: "attendance"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
+        | {
+            Args: { _photo_path: string }
+            Returns: {
+              check_in: string
+              check_out: string | null
+              created_at: string
+              id: string
+              note: string | null
+              photo_path: string | null
+              updated_at: string
+              user_id: string
+              work_date: string
+            }
+            SetofOptions: {
+              from: "*"
+              to: "attendance"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
       punch_out: {
         Args: never
         Returns: {
@@ -197,6 +222,7 @@ export type Database = {
           created_at: string
           id: string
           note: string | null
+          photo_path: string | null
           updated_at: string
           user_id: string
           work_date: string
