@@ -14,16 +14,198 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance: {
+        Row: {
+          check_in: string
+          check_out: string | null
+          created_at: string
+          id: string
+          note: string | null
+          updated_at: string
+          user_id: string
+          work_date: string
+        }
+        Insert: {
+          check_in?: string
+          check_out?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          updated_at?: string
+          user_id: string
+          work_date?: string
+        }
+        Update: {
+          check_in?: string
+          check_out?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          updated_at?: string
+          user_id?: string
+          work_date?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          full_name: string
+          id: string
+          is_active: boolean
+          job_title: string | null
+          joining_date: string | null
+          monthly_salary: number
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          full_name?: string
+          id: string
+          is_active?: boolean
+          job_title?: string | null
+          joining_date?: string | null
+          monthly_salary?: number
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          job_title?: string | null
+          joining_date?: string | null
+          monthly_salary?: number
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      salary_records: {
+        Row: {
+          base_salary: number
+          bonuses: number
+          created_at: string
+          deductions: number
+          id: string
+          net_salary: number | null
+          notes: string | null
+          paid_at: string | null
+          salary_month: string
+          status: Database["public"]["Enums"]["salary_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          base_salary: number
+          bonuses?: number
+          created_at?: string
+          deductions?: number
+          id?: string
+          net_salary?: number | null
+          notes?: string | null
+          paid_at?: string | null
+          salary_month: string
+          status?: Database["public"]["Enums"]["salary_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          base_salary?: number
+          bonuses?: number
+          created_at?: string
+          deductions?: number
+          id?: string
+          net_salary?: number | null
+          notes?: string | null
+          paid_at?: string | null
+          salary_month?: string
+          status?: Database["public"]["Enums"]["salary_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      punch_in: {
+        Args: never
+        Returns: {
+          check_in: string
+          check_out: string | null
+          created_at: string
+          id: string
+          note: string | null
+          updated_at: string
+          user_id: string
+          work_date: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "attendance"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      punch_out: {
+        Args: never
+        Returns: {
+          check_in: string
+          check_out: string | null
+          created_at: string
+          id: string
+          note: string | null
+          updated_at: string
+          user_id: string
+          work_date: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "attendance"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "staff"
+      salary_status: "draft" | "processed" | "paid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +332,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "staff"],
+      salary_status: ["draft", "processed", "paid"],
+    },
   },
 } as const
