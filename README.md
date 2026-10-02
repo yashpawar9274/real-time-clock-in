@@ -27,3 +27,27 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+
+## Deploy to Vercel
+
+Import the connected Git repository into Vercel. The included `vercel.json`
+uses the framework's Vercel server preset, so server-rendered pages and direct
+links work without custom redirects.
+
+Add these environment variables to Vercel for Production, Preview, and
+Development:
+
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_PROJECT_ID`
+
+Use the same public Lovable Cloud values already configured for this project.
+Do not add a service-role key. After the first deployment, add the Vercel
+production and preview domains to the authentication redirect URL allowlist so
+email recovery and Google sign-in can return to the app.
+
+Vercel runs `bun run build:vercel`; the normal `bun run build` remains reserved
+for Lovable publishing. Month-end payroll remains scheduled by Lovable Cloud
+and must not be duplicated as a Vercel Cron Job.
