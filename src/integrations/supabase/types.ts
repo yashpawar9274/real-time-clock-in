@@ -51,6 +51,7 @@ export type Database = {
         Row: {
           created_at: string
           department: string | null
+          employee_code: string
           full_name: string
           id: string
           is_active: boolean
@@ -63,6 +64,7 @@ export type Database = {
         Insert: {
           created_at?: string
           department?: string | null
+          employee_code: string
           full_name?: string
           id: string
           is_active?: boolean
@@ -75,6 +77,7 @@ export type Database = {
         Update: {
           created_at?: string
           department?: string | null
+          employee_code?: string
           full_name?: string
           id?: string
           is_active?: boolean
@@ -88,6 +91,7 @@ export type Database = {
       }
       salary_records: {
         Row: {
+          attendance_days: number
           base_salary: number
           bonuses: number
           created_at: string
@@ -100,8 +104,10 @@ export type Database = {
           status: Database["public"]["Enums"]["salary_status"]
           updated_at: string
           user_id: string
+          working_days: number
         }
         Insert: {
+          attendance_days?: number
           base_salary: number
           bonuses?: number
           created_at?: string
@@ -114,8 +120,10 @@ export type Database = {
           status?: Database["public"]["Enums"]["salary_status"]
           updated_at?: string
           user_id: string
+          working_days?: number
         }
         Update: {
+          attendance_days?: number
           base_salary?: number
           bonuses?: number
           created_at?: string
@@ -128,6 +136,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["salary_status"]
           updated_at?: string
           user_id?: string
+          working_days?: number
         }
         Relationships: []
       }
@@ -157,6 +166,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_monthly_salaries: {
+        Args: { _salary_month?: string }
+        Returns: number
+      }
       punch_in: {
         Args: never
         Returns: {

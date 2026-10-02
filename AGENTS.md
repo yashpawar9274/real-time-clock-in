@@ -11,3 +11,5 @@
 
 - Keep authenticated workforce features under the managed `_authenticated` route; this centralizes access control.
 - Use browser Supabase calls under RLS for attendance and payroll data; this preserves live updates and user-scoped access.
+- Keep phone installation manifest-only unless offline operation is explicitly requested; attendance requires a live connection.
+- Generate closed-month payroll in the database so scheduled and manual administrator runs use the same calculation.
