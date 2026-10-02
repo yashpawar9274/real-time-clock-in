@@ -13,3 +13,4 @@
 - Use browser Supabase calls under RLS for attendance and payroll data; this preserves live updates and user-scoped access.
 - Keep phone installation manifest-only unless offline operation is explicitly requested; attendance requires a live connection.
 - Generate closed-month payroll in the database so scheduled and manual administrator runs use the same calculation.
+- Keep the default build target managed by Lovable and use the dedicated `build:vercel` command for Vercel; this preserves both hosting paths.
