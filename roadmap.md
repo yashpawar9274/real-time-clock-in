@@ -6,3 +6,6 @@
 - [x] Add installable phone app support
 - [x] Verify signed-out and authenticated flows
 - [x] Add Vercel hosting support
+- [ ] Require a live photo for check-in and remove check-out
+- [ ] Show live check-in photos, times, and navbar alerts to admins
+- [ ] Verify staff and admin attendance flows
