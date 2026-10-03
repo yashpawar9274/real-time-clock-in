@@ -8,6 +8,8 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
+import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -136,6 +138,86 @@ function RootComponent() {
     });
     return () => data.subscription.unsubscribe();
   }, [queryClient, router]);
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    let active = true;
+
+    const handleNativeAuthCallback = async (url: string) => {
+      if (!url) return;
+
+      const callbackUrl = new URL(url);
+      const hashParams = new URLSearchParams(callbackUrl.hash.startsWith("#") ? callbackUrl.hash.slice(1) : callbackUrl.hash);
+      const params = new URLSearchParams({
+        ...Object.fromEntries(callbackUrl.searchParams.entries()),
+        ...Object.fromEntries(hashParams.entries()),
+      });
+      const isRecovery =
+        params.get("type") === "recovery" ||
+        callbackUrl.hash.includes("type=recovery") ||
+        callbackUrl.pathname.includes("reset-password");
+
+      try {
+        const code = params.get("code");
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) {
+            console.error("Auth callback exchange error:", error);
+            return;
+          }
+        } else {
+          const accessToken = params.get("access_token");
+          const refreshToken = params.get("refresh_token");
+          const expiresIn = params.get("expires_in");
+          const tokenType = params.get("token_type");
+
+          if (accessToken && refreshToken && expiresIn && tokenType) {
+            const expiresAt = Number(params.get("expires_at") || Math.round(Date.now() / 1000) + Number(expiresIn));
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+
+            if (error) {
+              console.error("Auth session restore error:", error);
+              return;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to process auth callback:", error);
+        return;
+      }
+
+      if (isRecovery) {
+        const nextHash = callbackUrl.hash || "";
+        window.history.replaceState({}, "", `/reset-password${nextHash}`);
+        await router.navigate({ to: "/reset-password" });
+        return;
+      }
+
+      if (active) {
+        await router.navigate({ to: "/dashboard" });
+      }
+    };
+
+    const setup = async () => {
+      const listener = await App.addListener("appUrlOpen", ({ url }) => {
+        void handleNativeAuthCallback(url);
+      });
+
+      return listener;
+    };
+
+    let listenerPromise: Promise<{ remove: () => void }> | undefined;
+    listenerPromise = setup();
+
+    return () => {
+      active = false;
+      void listenerPromise?.then((listener) => listener.remove());
+    };
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
