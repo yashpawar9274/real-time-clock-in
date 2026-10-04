@@ -14,3 +14,4 @@
 - Keep phone installation manifest-only unless offline operation is explicitly requested; attendance requires a live connection.
 - Generate closed-month payroll in the database so scheduled and manual administrator runs use the same calculation.
 - Keep the default build target managed by Lovable and use the dedicated `build:vercel` command for Vercel; this preserves both hosting paths.
+- Send background check-in alerts through Firebase from an authenticated server function; this keeps notification credentials and admin device tokens off staff devices.

@@ -9,3 +9,5 @@
 - [x] Require a live photo for check-in and remove check-out
 - [x] Show live check-in photos, times, and navbar alerts to admins
 - [ ] Verify staff and admin attendance flows
+
+- [ ] Add background phone alerts for administrator check-ins
