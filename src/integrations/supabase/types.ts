@@ -54,6 +54,7 @@ export type Database = {
           longitude: number | null
           note: string | null
           photo_path: string | null
+          push_notified_at: string | null
           updated_at: string
           user_id: string
           work_date: string
@@ -67,6 +68,7 @@ export type Database = {
           longitude?: number | null
           note?: string | null
           photo_path?: string | null
+          push_notified_at?: string | null
           updated_at?: string
           user_id: string
           work_date?: string
@@ -80,6 +82,7 @@ export type Database = {
           longitude?: number | null
           note?: string | null
           photo_path?: string | null
+          push_notified_at?: string | null
           updated_at?: string
           user_id?: string
           work_date?: string
@@ -249,6 +252,7 @@ export type Database = {
               longitude: number | null
               note: string | null
               photo_path: string | null
+              push_notified_at: string | null
               updated_at: string
               user_id: string
               work_date: string
@@ -271,6 +275,7 @@ export type Database = {
               longitude: number | null
               note: string | null
               photo_path: string | null
+              push_notified_at: string | null
               updated_at: string
               user_id: string
               work_date: string
@@ -293,6 +298,7 @@ export type Database = {
           longitude: number | null
           note: string | null
           photo_path: string | null
+          push_notified_at: string | null
           updated_at: string
           user_id: string
           work_date: string
@@ -315,6 +321,7 @@ export type Database = {
           longitude: number | null
           note: string | null
           photo_path: string | null
+          push_notified_at: string | null
           updated_at: string
           user_id: string
           work_date: string
