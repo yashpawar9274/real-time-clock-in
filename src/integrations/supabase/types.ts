@@ -149,6 +149,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_offs: {
         Row: {
           created_at: string
@@ -173,39 +194,18 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      generate_monthly_salaries: {
-        Args: { _salary_month?: string }
-        Returns: number
-      }
       admin_set_attendance_status: {
         Args: { _status: string; _user_id: string; _work_date: string }
         Returns: boolean
+      }
+      generate_monthly_salaries: {
+        Args: { _salary_month?: string }
+        Returns: number
       }
       punch_in:
         | {
@@ -215,6 +215,8 @@ export type Database = {
               check_out: string | null
               created_at: string
               id: string
+              latitude: number | null
+              longitude: number | null
               note: string | null
               photo_path: string | null
               updated_at: string
@@ -235,6 +237,8 @@ export type Database = {
               check_out: string | null
               created_at: string
               id: string
+              latitude: number | null
+              longitude: number | null
               note: string | null
               photo_path: string | null
               updated_at: string
@@ -248,13 +252,15 @@ export type Database = {
               isSetofReturn: false
             }
           }
-      punch_out: {
-        Args: never
+      punch_in_with_location: {
+        Args: { _latitude: number; _longitude: number; _photo_path: string }
         Returns: {
           check_in: string
           check_out: string | null
           created_at: string
           id: string
+          latitude: number | null
+          longitude: number | null
           note: string | null
           photo_path: string | null
           updated_at: string
@@ -268,8 +274,8 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      punch_in_with_location: {
-        Args: { _latitude: number; _longitude: number; _photo_path: string }
+      punch_out: {
+        Args: never
         Returns: {
           check_in: string
           check_out: string | null
