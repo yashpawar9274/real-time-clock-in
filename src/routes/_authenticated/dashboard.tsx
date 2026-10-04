@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Bell,
+  BellRing,
   Building2,
   CalendarDays,
   Camera,
@@ -30,6 +32,11 @@ import {
   calculatePayrollBreakdown,
   getCalendarDatesForMonth,
 } from "@/lib/payroll";
+import { registerForAdminPush } from "@/lib/push-notifications";
+import {
+  notifyAdminsOfCheckIn,
+  registerAdminPushToken,
+} from "@/lib/check-in-notifications.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -72,12 +79,16 @@ function Dashboard() {
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
   const [unreadCheckIns, setUnreadCheckIns] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [pushStatus, setPushStatus] = useState<"idle" | "busy" | "enabled">("idle");
+  const [pushMessage, setPushMessage] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
   const [weekOffDates, setWeekOffDates] = useState<string[]>([]);
   const [weekOffMessage, setWeekOffMessage] = useState("");
   const [savingWeekOffs, setSavingWeekOffs] = useState(false);
   const [weeklyOffTableAvailable, setWeeklyOffTableAvailable] = useState(true);
   const initializedRealtime = useRef(false);
+  const registerPushToken = useServerFn(registerAdminPushToken);
+  const notifyAdmins = useServerFn(notifyAdminsOfCheckIn);
 
   const load = useCallback(
     async (monthOverride?: string) => {
@@ -246,7 +257,7 @@ function Dashboard() {
       setMessage(uploadError.message);
       return;
     }
-    const { error } = location
+    const { data: attendance, error } = location
       ? await supabase.rpc("punch_in_with_location", {
           _photo_path: photoPath,
           _latitude: location.latitude,
@@ -259,7 +270,37 @@ function Dashboard() {
       setPhoto(null);
       setPhotoPreview(null);
       setMessage("Check-in recorded successfully.");
+      if (attendance?.id) {
+        void notifyAdmins({ data: { attendanceId: attendance.id } }).catch((notificationError) => {
+          console.error("Admin push notification failed:", notificationError);
+        });
+      }
       await load();
+    }
+  }
+
+  async function enablePhoneAlerts() {
+    setPushStatus("busy");
+    setPushMessage("");
+    try {
+      const result = await registerForAdminPush();
+      if (result.status === "registered") {
+        await registerPushToken({ data: { token: result.token } });
+        setPushStatus("enabled");
+        setPushMessage("Phone alerts enabled on this device.");
+        return;
+      }
+      setPushStatus("idle");
+      const messages = {
+        "open-in-new-tab": "Open the app in its own tab or use the installed app to enable phone alerts.",
+        denied: "Notifications are blocked. Allow them in this browser's site settings and try again.",
+        unsupported: "This browser does not support background notifications.",
+        "not-configured": "Web push is not configured for this connection.",
+      } as const;
+      setPushMessage(messages[result.status]);
+    } catch (error) {
+      setPushStatus("idle");
+      setPushMessage(error instanceof Error ? error.message : "Phone alerts could not be enabled.");
     }
   }
 
@@ -497,6 +538,25 @@ function Dashboard() {
                       >
                         <X />
                       </Button>
+                    </div>
+                    <div className="border-b pb-3">
+                      <Button
+                        type="button"
+                        variant={pushStatus === "enabled" ? "secondary" : "outline"}
+                        className="w-full"
+                        disabled={pushStatus === "busy" || pushStatus === "enabled"}
+                        onClick={() => void enablePhoneAlerts()}
+                      >
+                        <BellRing />
+                        {pushStatus === "busy"
+                          ? "Enabling…"
+                          : pushStatus === "enabled"
+                            ? "Phone alerts enabled"
+                            : "Enable phone alerts"}
+                      </Button>
+                      {pushMessage && (
+                        <p className="mt-2 text-xs text-muted-foreground">{pushMessage}</p>
+                      )}
                     </div>
                     <div className="mt-2 max-h-80 divide-y overflow-y-auto">
                       {allAttendance.slice(0, 5).map((row) => {
